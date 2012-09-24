@@ -1,12 +1,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@drawable/background_pattern" >
 
     <RelativeLayout
         android:id="@+id/cabecalho"
         android:layout_width="fill_parent"
-        android:layout_height="52dp"
+        android:layout_height="48dp"
         android:background="@drawable/gradient"
         android:orientation="horizontal"
         android:padding="0dip" >
@@ -17,8 +18,8 @@
             android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/button1"
             android:layout_weight="0.52"
             android:gravity="center_horizontal|center_vertical"
             android:text="Adicionar Pakote"
@@ -38,29 +39,47 @@
             android:text="OK" />
     </RelativeLayout>
 
-    <EditText
-        android:id="@+id/codeText"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
         android:layout_below="@+id/cabecalho"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="21dp"
-        android:ems="10"
-        android:hint="Código (Ex.: RA123123123HK)"
-        android:inputType="textCapCharacters|text"
-        android:maxLength="13" >
+        android:background="@drawable/dropshadow" >
+    </View>
 
-        <requestFocus />
-    </EditText>
-
-    <EditText
-        android:id="@+id/nameText"
+    <RelativeLayout
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/codeText"
-        android:layout_below="@+id/codeText"
-        android:layout_marginTop="17dp"
-        android:ems="10"
-        android:hint="Nome (Ex.: Bugiganga)" />
+        android:layout_height="160dp"
+        android:layout_below="@+id/divider"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="23dp"
+        android:background="@drawable/border" >
+
+        <EditText
+            android:id="@+id/nameText"
+            android:layout_width="290dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="18dp"
+            android:ems="10"
+            android:hint="Nome (Ex.: Bugiganga)" >
+
+            <requestFocus />
+        </EditText>
+
+        <EditText
+            android:id="@+id/codeText"
+            android:layout_width="290dp"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/nameText"
+            android:layout_alignLeft="@+id/nameText"
+            android:layout_marginBottom="18dp"
+            android:ems="10"
+            android:hint="Código (Ex.: RA123123123HK)"
+            android:inputType="textCapCharacters|text"
+            android:maxLength="13" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

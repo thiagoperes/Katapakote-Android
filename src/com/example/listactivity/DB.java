@@ -21,7 +21,7 @@ public class DB extends SQLiteOpenHelper {
  
     private static String DB_NAME = "katapakote";
  
-    private SQLiteDatabase myDataBase; 
+    public SQLiteDatabase myDataBase; 
  
     private final Context myContext;
     

@@ -88,20 +88,66 @@ public class SessionManager {
 		return ret;
 	}
 		
-	static void parseRequest(String requestResponse)
+	static void parseRequest(String requestResponse, String trackingCode)
 	{
 		try {
 			JSONObject obj = new JSONObject(requestResponse);
-			System.out.println(obj);
+			//System.out.println(obj);
 			JSONArray statuses = obj.getJSONArray("data");
 			
 			if (statuses.length() == 0) return;
 			
 			// open db connection
+			startDB();
+			String query = "insert into statuses ( id_package, uf, city, date, description ) values ";
+			
+			// Get package id
+			int packageId = -1;
+			
+			String q = "select * from packages where tracking_code = '" + trackingCode + "'";
+			System.out.println(q);
+			Cursor c = dbHelper.myDataBase.rawQuery(q, null);
+			if (c.getCount() != 1)
+			{
+				System.out.println("deu merda");
+				c.close();
+				return;
+			}
+			else
+			{
+				c.moveToFirst();
+				packageId = c.getInt(0);
+			}
+			c.close();
+			// END: Get package id
+			
 			for (int i = 0; i < statuses.length(); i++) 
 			{
+				String values = String.format("( %d, ", packageId);
+				JSONObject status = (JSONObject) statuses.get(i);
 				
+				values = values + ( (status.has("state") ? String.format("'%s', ", status.get("state")) : "null, " ) );
+				values = values + ( (status.has("city") ? String.format("'%s', ", status.get("city")) : "null, " ) );
+				values = values + ( (status.has("date") ? String.format("'%s', ", status.get("date")) : "null, " ) );
+				values = values + ( (status.has("description") ? String.format("'%s'", status.get("description")) : "null" ) );
+				values += " )";
+				
+				String finalQuery = query + values;
+				System.out.println(finalQuery);
+				dbHelper.myDataBase.execSQL(finalQuery);
 			}
+			
+			// Print statuses
+			/*c = dbHelper.myDataBase.rawQuery("select * from statuses", null);
+			c.moveToFirst();
+			while(!c.isAfterLast())
+	        {
+				System.out.println(c.getString(1) + "< this");
+	        	c.moveToNext();
+	        }
+	        c.close();*/
+			
+			dbHelper.close();
 			// close db connection
 			
 		} catch (JSONException e) {
@@ -110,20 +156,21 @@ public class SessionManager {
 		}		
 	}
 	
-	static void requestForPackage(String trackingCode) {	
+	static void requestForPackage(final String trackingCode) {	
+				
+		String url = BASE_URL + trackingCode;
+		System.out.println("Requesting for package: " + url);
 		
-		System.out.println("hello");
-		
-		client.get(BASE_URL + trackingCode, new AsyncHttpResponseHandler() {
+		client.get(url, new AsyncHttpResponseHandler() {
 		    @Override
 		    public void onSuccess(String response) {
 		        System.out.println(response);
-		        parseRequest(response);
+		        parseRequest(response, trackingCode);
 		    }
 		    @Override
 		     public void onFailure(Throwable e, String response) {
 		         // Response failed :(
-		    	System.out.println("response failed");
+		    	System.out.println("request failed");
 		     }
 
 		     @Override
@@ -134,6 +181,10 @@ public class SessionManager {
 	}
 	
 	static void refreshAllPackages() {
-		
+		ArrayList<HashMap<String, String>> p = getAllPackages();
+		for (HashMap<String, String> h : p)
+		{
+			requestForPackage(h.get("trackingCode"));
+		}
 	}
 }

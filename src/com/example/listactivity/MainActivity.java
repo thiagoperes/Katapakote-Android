@@ -79,6 +79,14 @@ public class MainActivity extends ListActivity {
     }
     
     @Override
+    protected void onResume() {
+    	// TODO Auto-generated method stub
+    	super.onResume();
+    	
+    	refreshPackageList();
+    }
+    
+    @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
       if (v.getId() == this.getListView().getId()) 
       {
