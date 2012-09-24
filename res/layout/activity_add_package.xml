@@ -6,20 +6,22 @@
     <LinearLayout
         android:id="@+id/cabecalho"
         android:layout_width="fill_parent"
-        android:layout_height="45dp"
-        android:background="#550000"
+        android:layout_height="52dp"
+        android:background="@drawable/gradient"
         android:orientation="horizontal"
         android:padding="0dip" >
 
         <TextView
             android:id="@+id/texto1"
             android:layout_width="164dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
             android:layout_weight="0.52"
-            android:gravity="center_horizontal"
+            android:gravity="center_horizontal|center_vertical"
             android:text="Adicionar Pakote"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"
+            android:textSize="8pt"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/button1"

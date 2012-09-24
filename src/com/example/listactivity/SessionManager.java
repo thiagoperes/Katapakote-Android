@@ -3,6 +3,8 @@ package com.example.listactivity;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.xmlpull.v1.XmlPullParser;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -84,6 +86,8 @@ public class SessionManager {
 		    @Override
 		    public void onSuccess(String response) {
 		        System.out.println(response);
+		        
+		        
 		    }
 		    @Override
 		     public void onFailure(Throwable e, String response) {

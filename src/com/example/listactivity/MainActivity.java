@@ -45,6 +45,8 @@ public class MainActivity extends ListActivity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
 
+        SessionManager.postRequest();
+        
         refreshPackageList();
         
         this.getListView().setOnItemClickListener(new OnItemClickListener() {
