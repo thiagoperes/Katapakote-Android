@@ -1,0 +1,59 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:id="@+id/cabecalho"
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:background="#550000"
+        android:orientation="horizontal"
+        android:padding="0dip" >
+
+        <TextView
+            android:id="@+id/texto1"
+            android:layout_width="164dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_weight="0.52"
+            android:gravity="center_horizontal"
+            android:text="Adicionar Pakote"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/button1"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.07"
+            android:text="OK" />
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/codeText"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/cabecalho"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="21dp"
+        android:maxLength="13"
+        android:inputType="textCapCharacters|text"
+        android:ems="10"
+        android:hint="Código (Ex.: RA123123123HK)" >
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/nameText"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/codeText"
+        android:layout_below="@+id/codeText"
+        android:layout_marginTop="17dp"
+        android:ems="10"
+        android:hint="Nome (Ex.: Bugiganga)" />
+
+</RelativeLayout>
