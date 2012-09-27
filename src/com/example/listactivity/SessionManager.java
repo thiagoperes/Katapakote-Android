@@ -26,14 +26,16 @@ public class SessionManager {
 	private static AsyncHttpClient client = new AsyncHttpClient();
 	private static final String BASE_URL = "http://services.encomendaz.net/tracking.json?id=";
 	
-	static void initDB(Context context) {
+	static void initDB(Context context) 
+	{
 		if (dbHelper == null)
 		{
 			dbHelper = new DB(context);
 		}
 	}
 	
-	static void startDB() {
+	static void startDB() 
+	{
 		try {
         	dbHelper.createDataBase();
         } catch (IOException ioe) {
@@ -46,28 +48,41 @@ public class SessionManager {
         }
 	}
 	
-	static ArrayList<HashMap<String, String>> getAllPackages() {
-
-        SessionManager.startDB();
+	static ArrayList<HashMap<String, String>> getHashMapForRawQuery(String query)
+	{
+		startDB();
+		
+        ArrayList<HashMap<String, String>> result = new ArrayList<HashMap<String, String>>();
         
-        ArrayList<HashMap<String, String>> packages = new ArrayList<HashMap<String, String>>();
-        
-        Cursor c = dbHelper.getPackages();
+        Cursor c = dbHelper.myDataBase.rawQuery(query, null);
         c.moveToFirst();
         while(!c.isAfterLast())
         {
         	HashMap<String, String> tmp = new HashMap<String, String>();
-        	tmp.put("trackingCode", c.getString(1));
-        	tmp.put("name", c.getString(2));
-        	tmp.put("status", "vamos l‡");
-        	tmp.put("address", "uhul");
-        	packages.add(tmp);
+        	for(int i = 0; i < c.getColumnCount(); i++)
+        	{
+        		tmp.put(c.getColumnName(i), c.getString(i));
+        	}
+        	result.add(tmp);
         	
         	c.moveToNext();
         }
+        
         c.close();
         dbHelper.close();
-        return packages;
+        
+        return result;
+	}
+	
+	static ArrayList<HashMap<String, String>> getAllPackages() 
+	{
+        return getHashMapForRawQuery("select * from packages");
+	}
+	
+	static ArrayList<HashMap<String, String>> getStatusesForPackage(String trackingCode) 
+	{
+		String query = "SELECT * from packages, statuses WHERE tracking_code = '"+trackingCode+"' AND id_package = packages._id AND description IS NOT NULL";
+		return getHashMapForRawQuery(query);
 	}
 	
 	static int addPackage(String packageName, String trackingCode) {
@@ -92,12 +107,12 @@ public class SessionManager {
 	{
 		try {
 			JSONObject obj = new JSONObject(requestResponse);
-			//System.out.println(obj);
 			JSONArray statuses = obj.getJSONArray("data");
+			
+			//System.out.println(statuses);
 			
 			if (statuses.length() == 0) return;
 			
-			// open db connection
 			startDB();
 			String query = "insert into statuses ( id_package, uf, city, date, description ) values ";
 			
@@ -105,11 +120,11 @@ public class SessionManager {
 			int packageId = -1;
 			
 			String q = "select * from packages where tracking_code = '" + trackingCode + "'";
-			System.out.println(q);
+			//System.out.println(q);
 			Cursor c = dbHelper.myDataBase.rawQuery(q, null);
 			if (c.getCount() != 1)
 			{
-				System.out.println("deu merda");
+				System.out.println("Could not find a package matching tracking code: "+trackingCode);
 				c.close();
 				return;
 			}
@@ -119,12 +134,29 @@ public class SessionManager {
 				packageId = c.getInt(0);
 			}
 			c.close();
+			
 			// END: Get package id
 			
 			for (int i = 0; i < statuses.length(); i++) 
 			{
 				String values = String.format("( %d, ", packageId);
 				JSONObject status = (JSONObject) statuses.get(i);
+				
+				if(!status.has("date"))
+				{
+					continue;
+				}
+				
+				// Checks if a s has already been added
+				String tmpQuery = "select * from packages as p, statuses as s where p.tracking_code = '"+trackingCode+"' and p._id = s.id_package and s.date = '"+status.getString("date")+"'";
+				c = dbHelper.myDataBase.rawQuery(tmpQuery, null);
+				if(c.getCount() > 0)
+				{
+					c.close();
+					//System.out.println("Status already added, moving on...");
+					continue;
+				}
+				c.close();
 				
 				values = values + ( (status.has("state") ? String.format("'%s', ", status.get("state")) : "null, " ) );
 				values = values + ( (status.has("city") ? String.format("'%s', ", status.get("city")) : "null, " ) );
@@ -133,19 +165,20 @@ public class SessionManager {
 				values += " )";
 				
 				String finalQuery = query + values;
-				System.out.println(finalQuery);
+				
 				dbHelper.myDataBase.execSQL(finalQuery);
 			}
 			
 			// Print statuses
-			/*c = dbHelper.myDataBase.rawQuery("select * from statuses", null);
-			c.moveToFirst();
+			c = dbHelper.myDataBase.rawQuery("select * from statuses", null);
+			/*c.moveToFirst();
 			while(!c.isAfterLast())
 	        {
 				System.out.println(c.getString(1) + "< this");
 	        	c.moveToNext();
-	        }
-	        c.close();*/
+	        }*/
+			System.out.printf("%d statuses so far\n", c.getCount());
+	        c.close();
 			
 			dbHelper.close();
 			// close db connection
@@ -164,13 +197,13 @@ public class SessionManager {
 		client.get(url, new AsyncHttpResponseHandler() {
 		    @Override
 		    public void onSuccess(String response) {
-		        System.out.println(response);
+		        System.out.println("Request succeeded");
 		        parseRequest(response, trackingCode);
 		    }
 		    @Override
 		     public void onFailure(Throwable e, String response) {
 		         // Response failed :(
-		    	System.out.println("request failed");
+		    	System.out.println("Request failed");
 		     }
 
 		     @Override
@@ -184,7 +217,7 @@ public class SessionManager {
 		ArrayList<HashMap<String, String>> p = getAllPackages();
 		for (HashMap<String, String> h : p)
 		{
-			requestForPackage(h.get("trackingCode"));
+			requestForPackage(h.get("tracking_code"));
 		}
 	}
 }

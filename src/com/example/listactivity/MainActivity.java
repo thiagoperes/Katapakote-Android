@@ -33,43 +33,46 @@ import android.widget.Toast;
 import com.markupartist.android.widget.PullToRefreshListView;
 import com.markupartist.android.widget.PullToRefreshListView.OnRefreshListener;
 
-public class MainActivity extends ListActivity {
-	
+public class MainActivity extends ListActivity 
+{	
 	private static final int DETAIL_ACTIVITY = 1;
 	private static final int ADD_ACTIVITY = 2;
 	
-	private void refreshPackageList() {
+	private void refreshPackageList() 
+	{
 		SessionManager.initDB(this.getApplicationContext());
 		
 		setListAdapter(new ListAdapter(this, SessionManager.getAllPackages()));
 	}
 	
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) 
+    {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
                 
         refreshPackageList();
         
-        SessionManager.requestForPackage("RU467405286CH");
+        SessionManager.refreshAllPackages();
         
-        this.getListView().setOnItemClickListener(new OnItemClickListener() {
+        this.getListView().setOnItemClickListener(new OnItemClickListener() 
+        {
 
-			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
-					long id) {
-				// TODO Auto-generated method stub
-				//Toast.makeText(getApplicationContext(), "Item " + position, Toast.LENGTH_LONG).show();
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) 
+			{
+				ListAdapter tmp = (ListAdapter)getListAdapter();
 				
 				Intent i = new Intent(MainActivity.this, DetailActivity.class);
+				i.putExtra("trackingCode", tmp.getItem(position).get("tracking_code"));
 				startActivityForResult(i, DETAIL_ACTIVITY);
 			}
 		});
         registerForContextMenu(this.getListView());
         
         Button btn = (Button)findViewById(R.id.button1);
-        btn.setOnClickListener(new OnClickListener() {
-			
+        btn.setOnClickListener(new OnClickListener() 
+        {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(MainActivity.this, AddPackageActivity.class);
@@ -78,16 +81,16 @@ public class MainActivity extends ListActivity {
 		});
     }
     
-    @Override
-    protected void onResume() {
+    protected void onResume() 
+    {
     	// TODO Auto-generated method stub
     	super.onResume();
     	
     	refreshPackageList();
     }
     
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) 
+    {
       if (v.getId() == this.getListView().getId()) 
       {
         //AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
@@ -95,13 +98,13 @@ public class MainActivity extends ListActivity {
       }
     }
     
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
+    public boolean onContextItemSelected(MenuItem item) 
+    {
       AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
       int menuItemIndex = info.position;
             
       ListAdapter tmpAdapter = (ListAdapter)getListAdapter();
-      String trackingCode = tmpAdapter.getItem(menuItemIndex).get("trackingCode");
+      String trackingCode = tmpAdapter.getItem(menuItemIndex).get("tracking_code");
       
       if (SessionManager.removePackage(trackingCode) == 0)
       {
@@ -116,13 +119,18 @@ public class MainActivity extends ListActivity {
       return true;
     }
     
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
     	super.onActivityResult(requestCode, resultCode, data);
-    	if (resultCode == RESULT_OK && requestCode == ADD_ACTIVITY) 
+    	if (resultCode == RESULT_OK && (requestCode == ADD_ACTIVITY || requestCode == DETAIL_ACTIVITY)) 
     	{
     		refreshPackageList();
     	}
     }
+    
+    //
+    //	ListAdapter
+    //
     
     private class ListAdapter extends BaseAdapter {
     	private Context context; // needed to create the view
@@ -169,14 +177,15 @@ public class MainActivity extends ListActivity {
 			HashMap<String, String> tmp = getItem(position);
 			
 			vh.packageName.setText(tmp.get("name").toString());
-			vh.trackingCode.setText(tmp.get("trackingCode").toString());
-			vh.status.setText(tmp.get("status").toString());
-			vh.address.setText(tmp.get("address").toString());
+			vh.trackingCode.setText(tmp.get("tracking_code").toString());
+			//vh.status.setText(tmp.get("status").toString());
+			//vh.address.setText(tmp.get("address").toString());
 			
 			return convertView;
 		}
 
-		class ViewHolder {
+		class ViewHolder 
+		{
 			TextView packageName;
 			TextView trackingCode;
 			TextView status;

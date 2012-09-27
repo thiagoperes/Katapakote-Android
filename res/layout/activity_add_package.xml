@@ -49,36 +49,36 @@
 
     <RelativeLayout
         android:layout_width="300dp"
-        android:layout_height="160dp"
+        android:layout_height="140dp"
         android:layout_below="@+id/divider"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="23dp"
+        android:layout_marginTop="24dp"
         android:background="@drawable/border" >
 
         <EditText
             android:id="@+id/nameText"
-            android:layout_width="290dp"
+            android:layout_width="280dp"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="18dp"
+            android:layout_marginBottom="14dp"
             android:ems="10"
-            android:hint="Nome (Ex.: Bugiganga)" >
-
-            <requestFocus />
-        </EditText>
+            android:hint="Nome (Ex.: Bugiganga)" />
 
         <EditText
             android:id="@+id/codeText"
-            android:layout_width="290dp"
+            android:layout_width="280dp"
             android:layout_height="wrap_content"
             android:layout_above="@+id/nameText"
             android:layout_alignLeft="@+id/nameText"
-            android:layout_marginBottom="18dp"
+            android:layout_marginBottom="14dp"
             android:ems="10"
             android:hint="Código (Ex.: RA123123123HK)"
             android:inputType="textCapCharacters|text"
-            android:maxLength="13" />
+            android:maxLength="13" >
+
+            <requestFocus />
+        </EditText>
 
     </RelativeLayout>
 
