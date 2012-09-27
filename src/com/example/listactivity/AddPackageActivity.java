@@ -23,6 +23,19 @@ public class AddPackageActivity extends Activity {
         final EditText codeET = (EditText)findViewById(R.id.codeText);
         final EditText nameET = (EditText)findViewById(R.id.nameText);
         
+        Button btn = (Button)findViewById(R.id.button2);
+        btn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent("com.google.zxing.client.android.SCAN");
+			       intent.putExtra("SCAN_MODE", "QR_CODE_MODE");//for Qr code, its "QR_CODE_MODE" instead of "PRODUCT_MODE"
+			       intent.putExtra("SAVE_HISTORY", false);//this stops saving ur barcode in barcode scanner app's history
+			       startActivityForResult(intent, 0);
+			}
+		});
+        
         Button b = (Button)findViewById(R.id.button1);
         b.setOnClickListener(new OnClickListener() {
 			
@@ -76,5 +89,21 @@ public class AddPackageActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_add_package, menu);
         return true;
+    }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0) {
+            if (resultCode == RESULT_OK) {
+                    String contents = data.getStringExtra("SCAN_RESULT"); //this is the result
+                    EditText et = (EditText)findViewById(R.id.codeText);
+                    et.setText(contents);
+                    System.out.println("got QR code from zxing");
+            } else 
+            if (resultCode == RESULT_CANCELED) {
+              // Handle cancel
+            }
+        }
     }
 }

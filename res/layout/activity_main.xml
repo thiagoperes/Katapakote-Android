@@ -54,7 +54,6 @@
         android:layout_below="@+id/divider"
         android:divider="@android:color/transparent"
         android:dividerHeight="6dp"
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp"/>
+        android:padding="4dp"/>
 
 </RelativeLayout>

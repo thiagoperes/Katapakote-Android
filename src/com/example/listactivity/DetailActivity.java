@@ -3,14 +3,16 @@ package com.example.listactivity;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import android.os.Bundle;
-import android.app.Activity;
 import android.app.ListActivity;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
-import android.widget.ListView;
+import android.widget.Button;
+import android.widget.TextView;
 
 public class DetailActivity extends ListActivity {
 
@@ -21,12 +23,20 @@ public class DetailActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_detail);
-                
-        System.out.println(getIntent().getStringExtra("trackingCode"));
         
-        list = SessionManager.getStatusesForPackage( getIntent().getStringExtra("trackingCode") );
+        String trackingCode = getIntent().getStringExtra("trackingCode");
         
-        System.out.println(list);
+        list = SessionManager.getStatusesForPackage( trackingCode );
+        
+        
+        View header = View.inflate(this, R.layout.detail_header, null);
+        
+        TextView tv = (TextView)header.findViewById(R.id.trackindCodeTV);
+        tv.setText(trackingCode);
+        tv = (TextView)header.findViewById(R.id.packageNameTV);
+        tv.setTag(getIntent().getStringExtra("name"));
+        
+        getListView().addHeaderView(header);
         
         ArrayList<String> tmp = new ArrayList<String>();
         for(HashMap<String, String> h : list)
@@ -34,12 +44,12 @@ public class DetailActivity extends ListActivity {
         	tmp.add(h.get("description"));
         }
         
+        if (tmp.isEmpty())
+        {
+        	tmp.add("Sem informações");
+        }
+        
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, tmp);
         getListView().setAdapter(adapter);
-    }
-
-    public boolean onCreateOptionsMenu(Menu menu) {
-        //getMenuInflater().inflate(R.menu.activity_detail, menu);
-        return true;
     }
 }

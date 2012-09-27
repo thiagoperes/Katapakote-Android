@@ -45,7 +45,6 @@ public class MainActivity extends ListActivity
 		setListAdapter(new ListAdapter(this, SessionManager.getAllPackages()));
 	}
 	
-    @Override
     public void onCreate(Bundle savedInstanceState) 
     {
         super.onCreate(savedInstanceState);
@@ -62,9 +61,12 @@ public class MainActivity extends ListActivity
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) 
 			{
 				ListAdapter tmp = (ListAdapter)getListAdapter();
+				HashMap<String, String> tmpHash = tmp.getItem(position);
 				
 				Intent i = new Intent(MainActivity.this, DetailActivity.class);
-				i.putExtra("trackingCode", tmp.getItem(position).get("tracking_code"));
+				
+				i.putExtra("trackingCode", tmpHash.get("tracking_code"));
+				i.putExtra("name", tmpHash.get("name"));
 				startActivityForResult(i, DETAIL_ACTIVITY);
 			}
 		});

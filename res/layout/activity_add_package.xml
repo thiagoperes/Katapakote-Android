@@ -48,6 +48,7 @@
     </View>
 
     <RelativeLayout
+        android:id="@+id/relativeLayout1"
         android:layout_width="300dp"
         android:layout_height="140dp"
         android:layout_below="@+id/divider"
@@ -79,7 +80,15 @@
 
             <requestFocus />
         </EditText>
-
     </RelativeLayout>
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relativeLayout1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="33dp"
+        android:text="Ler código de barras" />
 
 </RelativeLayout>
