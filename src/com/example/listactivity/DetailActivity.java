@@ -28,7 +28,6 @@ public class DetailActivity extends ListActivity {
         
         list = SessionManager.getStatusesForPackage( trackingCode );
         
-        
         View header = View.inflate(this, R.layout.detail_header, null);
         
         TextView tv = (TextView)header.findViewById(R.id.trackindCodeTV);

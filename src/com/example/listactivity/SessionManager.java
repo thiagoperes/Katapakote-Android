@@ -81,7 +81,7 @@ public class SessionManager {
 	//
 	static ArrayList<HashMap<String, String>> getAllPackages() 
 	{
-		ArrayList<HashMap<String, String>> tmp  = getHashMapsForQuery("select * from packages");
+		ArrayList<HashMap<String, String>> tmp  = getHashMapsForQuery("SELECT * FROM packages");
 		ArrayList<HashMap<String, String>> ret = new ArrayList<HashMap<String,String>>();
 		for(HashMap<String, String> hash : tmp)
 		{
@@ -89,8 +89,8 @@ public class SessionManager {
 			if(lastStatus != null)
 			{
 				hash.putAll(lastStatus);
-				ret.add(hash);
 			}
+			ret.add(hash);
 		}
 		
 		System.out.println("printing stuff "+ret);
