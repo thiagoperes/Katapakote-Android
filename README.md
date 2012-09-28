@@ -45,6 +45,11 @@ This class shoes a list of statuses for a given package (selected in MainActivit
 
 This activity handles the addition of packages to the database. It contains a text mask according to business rules to keep data integrity.
 
+Also contains a QR/barcode reader integration with zxing barcode reader
+
+Sample QR Code: http://api.qrserver.com/v1/create-qr-code/?data=XX232444555XX&size=250x250
+Barcode Reader app: https://play.google.com/store/apps/details?id=com.google.zxing.client.android&hl=en
+
 ## Interface resources
 
 **- drawable/dropshadow**

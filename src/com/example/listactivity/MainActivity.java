@@ -38,20 +38,36 @@ public class MainActivity extends ListActivity
 {	
 	private static final int DETAIL_ACTIVITY = 1;
 	private static final int ADD_ACTIVITY = 2;
+	private static Intent serviceIntent;
 
+	
 	private void refreshPackageList() 
 	{
 		SessionManager.initDB(this.getApplicationContext());
 
 		setListAdapter(new ListAdapter(this, SessionManager.getAllPackages()));
 	}
+	
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+		
+		if(isFinishing())
+		{
+			System.out.println("starting package service");
+			serviceIntent = new Intent(getApplicationContext(), PackageService.class);
+		    //myIntent.putExtra("extraData", "somedata");
+		    startService(serviceIntent);
+		}
+	}
 
 	public void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.activity_main);
-
+		setContentView(R.layout.activity_main);		
+		
 		refreshPackageList();
 
 		SessionManager.refreshAllPackages();
@@ -87,7 +103,7 @@ public class MainActivity extends ListActivity
 	protected void onResume() 
 	{
 		super.onResume();
-
+		stopService(serviceIntent);
 		refreshPackageList();
 	}
 
