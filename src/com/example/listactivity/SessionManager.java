@@ -1,25 +1,24 @@
 package com.example.listactivity;
 
 import java.io.IOException;
-import java.io.StringReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
-import android.util.Xml;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 
 public class SessionManager {
 	private static DB dbHelper;
@@ -34,7 +33,7 @@ public class SessionManager {
 		}
 	}
 	
-	static void startDB() 
+	private static void startDB() 
 	{
 		try {
         	dbHelper.createDataBase();
@@ -48,7 +47,10 @@ public class SessionManager {
         }
 	}
 	
-	static ArrayList<HashMap<String, String>> getHashMapForRawQuery(String query)
+	//
+	//	Makes a SQL query and converts the result into an ArrayList of hashmaps 
+	//
+	private static ArrayList<HashMap<String, String>> getHashMapsForQuery(String query)
 	{
 		startDB();
 		
@@ -74,17 +76,78 @@ public class SessionManager {
         return result;
 	}
 	
+	//
+	// Gets all package information with the last status aswell
+	//
 	static ArrayList<HashMap<String, String>> getAllPackages() 
 	{
-        return getHashMapForRawQuery("select * from packages");
+		ArrayList<HashMap<String, String>> tmp  = getHashMapsForQuery("select * from packages");
+		ArrayList<HashMap<String, String>> ret = new ArrayList<HashMap<String,String>>();
+		for(HashMap<String, String> hash : tmp)
+		{
+			HashMap<String, String> lastStatus = getLastStatusForPackage(hash.get("tracking_code"));
+			if(lastStatus != null)
+			{
+				hash.putAll(lastStatus);
+				ret.add(hash);
+			}
+		}
+		
+		System.out.println("printing stuff "+ret);
+        return ret;
 	}
 	
+	//
+	// Gets all status information for a given package
+	//
 	static ArrayList<HashMap<String, String>> getStatusesForPackage(String trackingCode) 
 	{
-		String query = "SELECT * from packages, statuses WHERE tracking_code = '"+trackingCode+"' AND id_package = packages._id AND description IS NOT NULL";
-		return getHashMapForRawQuery(query);
+		String query = "SELECT * from packages, statuses WHERE tracking_code = '"+trackingCode+"' AND id_package = packages._id AND description IS NOT NULL";		
+		return getHashMapsForQuery(query);
 	}
 	
+	//
+	// Gets the single most recent status information for a given package
+	//
+	static HashMap<String, String> getLastStatusForPackage(String trackingCode)
+	{
+		String query = "SELECT date FROM statuses AS s, packages AS p WHERE p._id = s.id_package and p.tracking_code = '"+trackingCode+"'";
+		ArrayList<HashMap<String, String>> tmp = getHashMapsForQuery(query);
+		Map<Date, String> dates = new TreeMap<Date, String>();
+		
+		for(HashMap<String, String> s : tmp)
+		{
+			SimpleDateFormat f = new SimpleDateFormat("EEE, MMM dd HH:mm:ss ZZZZ yyyy");
+			Date d = null;
+			try {
+				d = f.parse(s.get("date"));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			//System.out.println("parsed date correctly " + d);
+			
+			dates.put(d, s.get("date"));
+		}
+		
+		Object[] tmpA = dates.values().toArray();
+		
+		if(tmpA.length == 0)
+		{
+			return null;
+		}
+		
+		String z = (String)tmpA[0];
+		
+		System.out.println(z);
+		
+		String query1 = String.format("SELECT description FROM statuses AS s, packages AS p WHERE date = '%s' AND p._id = s.id_package and p.tracking_code = '%s'", z, trackingCode);
+				
+		return getHashMapsForQuery(query1).get(0);
+	}
+	
+	//
+	// Adds a package to the database
+	//
 	static int addPackage(String packageName, String trackingCode) {
 		SessionManager.startDB();
 		
@@ -94,6 +157,9 @@ public class SessionManager {
 		return (ret == "ok") ? 0 : -1;		
 	}
 	
+	//
+	// Removes a package from the database
+	//
 	static int removePackage(String trackingCode)
 	{
 		SessionManager.startDB();
@@ -102,7 +168,10 @@ public class SessionManager {
 		
 		return ret;
 	}
-		
+	
+	//
+	// Parses status request from JSON and adds to the database 
+	//
 	static void parseRequest(String requestResponse, String trackingCode)
 	{
 		try {
@@ -189,21 +258,23 @@ public class SessionManager {
 		}		
 	}
 	
-	static void requestForPackage(final String trackingCode) {	
-				
+	//
+	// Asynchronously requests status information for a single package
+	//
+	static void requestForPackage(final String trackingCode) 
+	{	
 		String url = BASE_URL + trackingCode;
-		System.out.println("Requesting for package: " + url);
+		System.out.printf("Request for package - %s", url);
 		
 		client.get(url, new AsyncHttpResponseHandler() {
 		    @Override
 		    public void onSuccess(String response) {
-		        System.out.println("Request succeeded");
+		        System.out.printf("Request succeeded - %s", trackingCode);
 		        parseRequest(response, trackingCode);
 		    }
 		    @Override
 		     public void onFailure(Throwable e, String response) {
-		         // Response failed :(
-		    	System.out.println("Request failed");
+		    	System.out.printf("Request failed - %s", trackingCode);
 		     }
 
 		     @Override
@@ -213,7 +284,11 @@ public class SessionManager {
 		});
 	}
 	
-	static void refreshAllPackages() {
+	//
+	// Requests information for all packages
+	//
+	static void refreshAllPackages() 
+	{
 		ArrayList<HashMap<String, String>> p = getAllPackages();
 		for (HashMap<String, String> h : p)
 		{

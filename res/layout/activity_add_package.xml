@@ -32,11 +32,15 @@
             style="?android:attr/buttonStyleSmall"
             android:layout_width="50dp"
             android:layout_height="fill_parent"
-            android:layout_alignBaseline="@+id/texto1"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_weight="0.07"
-            android:text="OK" />
+            android:background="@drawable/button"
+            android:text="OK"
+            android:textColor="#ffffff"
+            android:textStyle="bold" />
+
     </RelativeLayout>
 
     <View
@@ -84,11 +88,11 @@
 
     <Button
         android:id="@+id/button2"
-        android:layout_width="wrap_content"
+        android:layout_width="220dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/relativeLayout1"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="33dp"
+        android:layout_marginTop="18dp"
         android:text="Ler código de barras" />
 
 </RelativeLayout>

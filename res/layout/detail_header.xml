@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="100dip"
-    android:background="#ff00ff" >
+    android:background="@drawable/header_gradient" >
 
     <TextView
         android:id="@+id/packageNameTV"
@@ -10,9 +10,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="14dp"
         android:text="Bugiganga tal"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#ffffff"
+        android:textStyle="bold"        
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="4dp" />
 
     <TextView
         android:id="@+id/trackindCodeTV"
@@ -20,8 +23,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/packageNameTV"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
         android:text="XX123123123XX"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#ffffff"
+        android:layout_marginBottom="10dp" />
 
 </RelativeLayout>

@@ -26,17 +26,17 @@
             android:textSize="8pt"
             android:textStyle="bold" />
 
-        <Button
+        <ImageButton
             android:id="@+id/button1"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="50dp"
             android:layout_height="match_parent"
-            android:layout_alignBaseline="@+id/texto1"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_weight="0.08"
             android:scrollHorizontally="false"
-            android:text="Add" />
+            android:src="@drawable/add_btn"
+            android:background="@android:color/transparent" />
     </RelativeLayout>
 
     <View
@@ -54,6 +54,7 @@
         android:layout_below="@+id/divider"
         android:divider="@android:color/transparent"
         android:dividerHeight="6dp"
-        android:padding="4dp"/>
+        android:padding="4dp"
+        android:paddingTop="1dp"/>
 
 </RelativeLayout>

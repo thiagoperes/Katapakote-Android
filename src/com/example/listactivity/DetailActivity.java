@@ -34,7 +34,7 @@ public class DetailActivity extends ListActivity {
         TextView tv = (TextView)header.findViewById(R.id.trackindCodeTV);
         tv.setText(trackingCode);
         tv = (TextView)header.findViewById(R.id.packageNameTV);
-        tv.setTag(getIntent().getStringExtra("name"));
+        tv.setText(getIntent().getStringExtra("name"));
         
         getListView().addHeaderView(header);
         
