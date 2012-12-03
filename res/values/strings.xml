@@ -3,8 +3,8 @@
     <string name="app_name">Katapakote</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
-    <string name="title_activity_main">MainActivity</string>
-    <string name="title_activity_detail">DetailActivity</string>
-    <string name="title_activity_add_package">AddPackageActivity</string>
+    <string name="title_activity_main">Katapakote</string>
+    <string name="title_activity_detail">Detalhe</string>
+    <string name="title_activity_add_package">Adicionar Pakote</string>
 
 </resources>

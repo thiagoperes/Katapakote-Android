@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -102,9 +103,41 @@ public class SessionManager {
 	//
 	static ArrayList<HashMap<String, String>> getStatusesForPackage(String trackingCode) 
 	{
-		String query = "SELECT * from packages, statuses WHERE tracking_code = '"+trackingCode+"' AND id_package = packages._id AND description IS NOT NULL";		
+		String query = "SELECT * from packages as p, statuses as s WHERE p.tracking_code = '"+trackingCode+"' AND s.id_package = p._id AND s.description IS NOT NULL";		
 		return getHashMapsForQuery(query);
 	}
+	
+	/*static ArrayList<HashMap<String, String>> getSortedStatusesForPackage(String trackingCode)
+	{
+		String query = "SELECT date FROM statuses AS s, packages AS p WHERE p._id = s.id_package and p.tracking_code = '"+trackingCode+"'";
+		ArrayList<HashMap<String, String>> tmp = getHashMapsForQuery(query);
+		Map<Date, Object> dates = new TreeMap<Date, String>();
+		
+		for(HashMap<String, String> s : tmp)
+		{
+			SimpleDateFormat f = new SimpleDateFormat("EEE, MMM dd HH:mm:ss ZZZZ yyyy");
+			Date d = null;
+			try {
+				d = f.parse(s.get("date"));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			//System.out.println("parsed date correctly " + d);
+			
+			dates.put(d, s);
+		}
+		
+		HashMap<String,String>[]tmpArray = (HashMap<String, String>[])dates.values().toArray();
+		
+		ArrayList<HashMap<String, String>> ret = new ArrayList<HashMap<String, String>>();
+		
+		for (HashMap<String, String> c : tmpArray)
+		{
+			ret.add(c);
+		}
+		
+		return ret;
+	}*/
 	
 	//
 	// Gets the single most recent status information for a given package

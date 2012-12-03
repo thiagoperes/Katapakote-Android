@@ -23,6 +23,17 @@ public class AddPackageActivity extends Activity {
         final EditText codeET = (EditText)findViewById(R.id.codeText);
         final EditText nameET = (EditText)findViewById(R.id.nameText);
         
+        Button mapBtn = (Button)findViewById(R.id.button3);
+        mapBtn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				Intent i = new Intent(AddPackageActivity.this, PackageMapActivity.class);
+				startActivityForResult(i, 1);
+			}
+		});
+        
         Button btn = (Button)findViewById(R.id.button2);
         btn.setOnClickListener(new OnClickListener() {
 			

@@ -7,8 +7,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.ListActivity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -38,14 +42,24 @@ public class MainActivity extends ListActivity
 {	
 	private static final int DETAIL_ACTIVITY = 1;
 	private static final int ADD_ACTIVITY = 2;
-	
-	private void refreshPackageList() 
-	{
-		SessionManager.initDB(this.getApplicationContext());
-
-		setListAdapter(new ListAdapter(this, SessionManager.getAllPackages()));
-	}
-
+	private BroadcastReceiver mConnReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            TextView tv = (TextView)findViewById(R.id.texto1);
+            
+            ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+            NetworkInfo ni = cm.getActiveNetworkInfo();
+            if (ni!=null && ni.isConnected()) 
+            {
+            	tv.setText("Katapakote (online)");
+            }
+            else 
+            {
+            	tv.setText("Katapakote (offline)");
+            }
+        }
+    };   
+    
 	public void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
@@ -55,7 +69,9 @@ public class MainActivity extends ListActivity
 		refreshPackageList();
 
 		SessionManager.refreshAllPackages();
-
+		
+		registerReceiver(mConnReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+		
 		this.getListView().setOnItemClickListener(new OnItemClickListener() 
 		{
 
@@ -83,7 +99,7 @@ public class MainActivity extends ListActivity
 			}
 		});
 	}
-
+	
 	protected void onResume() 
 	{
 		super.onResume();
@@ -127,11 +143,25 @@ public class MainActivity extends ListActivity
 			refreshPackageList();
 		}
 	}
+	
+	//
+	// Custom Methods
+	//
 
+	private void refreshPackageList() 
+	{
+		SessionManager.initDB(this.getApplicationContext());
+
+		setListAdapter(new ListAdapter(this, SessionManager.getAllPackages()));
+	}
+	
+	//
+	// END: Custom Methods
+	//
+	
 	//
 	//	ListAdapter
 	//
-
 	private class ListAdapter extends BaseAdapter {
 		private Context context; // needed to create the view
 		private ArrayList<HashMap<String, String>> packages;
@@ -204,4 +234,8 @@ public class MainActivity extends ListActivity
 			TextView address;
 		}
 	}
+	
+	//
+	// END: ListAdapter
+	// 
 }
