@@ -35,9 +35,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.markupartist.android.widget.PullToRefreshListView;
-import com.markupartist.android.widget.PullToRefreshListView.OnRefreshListener;
-
 public class MainActivity extends ListActivity 
 {	
 	private static final int DETAIL_ACTIVITY = 1;
@@ -147,14 +144,12 @@ public class MainActivity extends ListActivity
 	//
 	// Custom Methods
 	//
-
 	private void refreshPackageList() 
 	{
 		SessionManager.initDB(this.getApplicationContext());
 
 		setListAdapter(new ListAdapter(this, SessionManager.getAllPackages()));
 	}
-	
 	//
 	// END: Custom Methods
 	//
@@ -190,8 +185,7 @@ public class MainActivity extends ListActivity
 			if (convertView == null) {
 
 				vh = new ViewHolder();
-				convertView = LayoutInflater.from(context).inflate(
-						R.layout.package_cell, null);
+				convertView = LayoutInflater.from(context).inflate(R.layout.package_cell, null);
 				vh.packageName = (TextView)convertView.findViewById(R.id.packageNameTV);
 				vh.trackingCode = (TextView)convertView.findViewById(R.id.trackingCodeTV);
 				vh.status = (TextView)convertView.findViewById(R.id.statusTV);
@@ -204,9 +198,14 @@ public class MainActivity extends ListActivity
 			}
 
 			HashMap<String, String> tmp = getItem(position);
-
+			
 			vh.packageName.setText(tmp.get("name").toString());
 			vh.trackingCode.setText(tmp.get("tracking_code").toString());
+			
+			// Dados inseridos de exemplo
+			vh.status.setText( position % 2 == 0 ? "Sem informações" : "Entregue" );
+			// END: Dados inseridos de exemplo
+			
 			if(tmp.containsKey("description"))
 			{
 				if(tmp.get("description") != null)
@@ -234,7 +233,6 @@ public class MainActivity extends ListActivity
 			TextView address;
 		}
 	}
-	
 	//
 	// END: ListAdapter
 	// 

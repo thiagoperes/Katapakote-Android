@@ -169,7 +169,7 @@ public class SessionManager {
 			return null;
 		}
 		
-		String z = (String)tmpA[0];
+		String z = (String)tmpA[tmpA.length-1];
 		
 		System.out.println(z);
 		

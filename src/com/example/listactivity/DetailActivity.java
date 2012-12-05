@@ -6,7 +6,6 @@ import java.util.HashMap;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -23,6 +22,17 @@ public class DetailActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_detail);
+        
+        Button mapBtn = (Button)findViewById(R.id.button1);
+        mapBtn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				Intent i = new Intent(DetailActivity.this, PackageMapActivity.class);
+				startActivityForResult(i, 1);
+			}
+		});
         
         String trackingCode = getIntent().getStringExtra("trackingCode");
         
